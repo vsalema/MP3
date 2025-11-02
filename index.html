@@ -1,0 +1,29 @@
+﻿<!doctype html>
+<html lang="fr"><meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Lecteur MP3</title>
+<style>
+  body{font:16px system-ui, sans-serif;margin:2rem}
+  .row{display:flex;gap:1rem;align-items:center;margin:.25rem 0}
+  button{cursor:pointer}
+  #player{width:100%;margin-top:1rem}
+</style>
+<h1>Lecteur MP3</h1>
+<p><a href="./playlist.m3u">Voir la playlist brute</a></p>
+<div id="tracks"></div>
+<audio id="player" controls preload="metadata"></audio>
+<script>
+(async () => {
+  const res = await fetch('./playlist.m3u'); const txt = await res.text();
+  const lines = txt.split(/\r?\n/).map(l=>l.trim()).filter(l=>l && !l.startsWith('#'));
+  const list = lines.map(p => ({ title: decodeURIComponent(p.split('/').pop()), href: p }));
+  const $c = document.getElementById('tracks'); const $p = document.getElementById('player');
+  function highlight(i){[...$c.children].forEach((r,k)=>r.style.background = k===i ? '#eef' : 'transparent');}
+  list.forEach((t,i)=>{ const row=document.createElement('div'); row.className='row';
+    const btn=document.createElement('button'); btn.textContent='▶'; btn.onclick=()=>{$p.src=t.href; $p.play(); highlight(i);};
+    const a=document.createElement('a'); a.textContent=t.title; a.href=t.href; row.append(btn,a); $c.append(row);
+  });
+  if(list.length){ $p.src=list[0].href; highlight(0); }
+})();
+</script>
+</html>
