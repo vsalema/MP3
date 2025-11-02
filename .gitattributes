@@ -1,5 +1,4 @@
 *.mp3 -text
-*.m3u text eol=lf
+*.m3u  text eol=lf
 *.m3u8 text eol=lf
 *.html text eol=lf
-*.mp3 !text !filter !merge !diff
